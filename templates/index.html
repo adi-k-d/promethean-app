@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Upload Excel File</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Upload Excel File</h1>
+      <form
+        method="POST"
+        enctype="multipart/form-data"
+        action="{{ url_for('upload') }}"
+      >
+        <div class="form-group">
+          <label for="file">Select a file:</label>
+          <input type="file" id="file" name="file" />
+        </div>
+        <div class="form-group">
+          <label for="sheet_name">Select a sheet:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="sheet_name"
+            name="sheet_name"
+            placeholder="Sheet Name"
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>
