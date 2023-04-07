@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from db_models import db,ProductionData  
 
-engine = create_engine('postgresql://username:password@localhost:5432/mydatabase')
+engine = create_engine('http://iot-data.cn3ljizzlmy8.ap-south-1.rds.amazonaws.com/raymond_vapi_plant_performance')
 
 # create a session to interact with the database
 Session = sessionmaker(bind=engine)
