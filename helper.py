@@ -8,3 +8,7 @@ row_names = df.index.tolist()
 
 # Print the row names
 print(row_names)
+
+
+datetime.strptime(row['Date'], "%y-%m-%d").strftime("%Y-%m-%d %H:%M:%S"),
+date=datetime.strptime(row['Date'].strftime('%Y-%m-%d %H:%M:%S')), 
