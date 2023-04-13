@@ -9,6 +9,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://adityakd:59XrsGxjZKfNrGw9@appsmith.sensomak.com:5432/raymond_vapi_plant_performance'
+db.init_app(app)
 DB_URI = 'postgresql://adityakd:59XrsGxjZKfNrGw9@appsmith.sensomak.com:5432/raymond_vapi_plant_performance'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -96,13 +97,16 @@ def get_water_consumption():
    if len(water_data) == 0:  # check if there are no results
        return jsonify(results)  # return empty list if there are no results
    else:
-       for data in water_data:
-           result_dict = {}
-           for column in WaterConsumption.table.columns:        
-               result_dict[column.name] = getattr(data, column.name)
-           results.append(result_dict)
-       return jsonify(results)
-
+       data = []
+       for row in water_data:
+           row_dict = {}
+           for column in row.__table__.columns:
+               row_dict[column.name] = str(getattr(row, column.name))
+           data.append(row_dict)
+       return jsonify(data)
+      
+       
+    
 
     
 
