@@ -18,35 +18,22 @@ Session = sessionmaker(bind=engine)
 
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+
 
 @app.route('/steam_consumption')
 def get_steam_consumption():
     steam_data = SteamConsumption.query.all()
-    results = [
-        {
-            'id': data.id,
-            'date': datetime.strptime(data.date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S'),
-            'total_steam': data.total_steam,
-            'finishing': data.finishing,
-            'weaving': data.weaving,
-            'recombing': data.recombing,
-            'grey_combing': data.grey_combing,
-            'dyeing': data.dyeing,
-            'spinning': data.spinning,
-            'sludge_drier': data.sludge_drier,
-            'w_s': data.w_s,
-            'pc_dyg': data.pc_dyg,
-            'tfo': data.tfo,
-            'steaming_m_c': data.steaming_m_c,
-            'unmetered': data.unmetered,
-            'unmetered_percentage': data.unmetered_percentage,
-            'dm_water': data.dm_water,
-            'recovery_percentage': data.recovery_percentage
-        } for data in steam_data]
-    return jsonify(results)
+    results = []
+    if len(steam_data) == 0:  # check if there are no results
+        return jsonify(results)  # return empty list if there are no results
+    else:
+        data = []
+        for row in steam_data:
+            row_dict = {}
+            for column in row.__table__.columns:
+                row_dict[column.name] = str(getattr(row, column.name))
+            data.append(row_dict)
+        return jsonify(data)
 
 
 @app.route('/steam_consumption/upload', methods=['GET', 'POST'])
