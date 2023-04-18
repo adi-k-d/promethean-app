@@ -106,6 +106,8 @@ def upload_water_consumption():
     if request.method == 'POST':
         # Retrieve the uploaded file from the form data
         file = request.files['file']
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
         
         # Parse the Excel file using a library like Pandas
         df = pd.read_excel(file, sheet_name='MAIN')
@@ -114,58 +116,59 @@ def upload_water_consumption():
         session = Session()
         for _, row in df.iterrows():
             if not pd.isna(row['Date']):
-                water_consumption = WaterConsumption(
-                    date=row['Date'],
+                date = row['Date']
+                if start_date <= date <= end_date:
+                    water_consumption = WaterConsumption(
+                        date=row['Date'],
+                        river=row['River'],
+                        process=row['Process'],
+                        drinking=row['Drinking'],
+                        finishing_return=row["Finishing Return"],
+                        piece_dying_return=row['Piece Dying Return'],
+                        total_return=row['Total Return'],
+                        drinking_school=row['Drinking School'],
+                        etp=row['ETP'],
+                        weaving=row['Weaving'],
+                        old_finishing=row['Old finishing'],
+                        new_finishing=row['New finishing'],
+                        total_fsg=row['Total fsg'],
+                        piece_dyeing=row['Piece Dyieng'],
+                        dyeing=row['Dyeing'],
+                        wool_scoring=row['Wool scoring'],
+                        folding=row['Folding'],
+                        recombing=row['Recombing'],
+                        drinking_ro=row['Drinking RO'],
+                        spinning=row['Spinning'],
+                        boiler=row['Boiler'],
+                        engg_drinking=row['Engg. Drinking'],
+                        grey_combing=row['Grey combing'],
+                        regeneration=row['Regeneration'],
+                        total_process_return=row['Total = Process - Return'],
+                        all_process_total=row['All process total'],
+                        canteen=row['canteen'],
+                        run_hr_m_small_pump = row['Run hr m (Small pump)'],
+                        run_hr_m_big_pump = row['Run hr m        (Big pump)'],
+                        rain_water_kl_small_pump = row['rain water KL(small pump)'],
+                        rain_water_kl_big_pump = row['rain water KL(BIG pump)'],
+                        total_rain_water_kl = row['TOTAL RAIN WATER(KL)'],
+                        c = row['C'],
+                        d = row['D'],
+                        opening = row['Opening'],
+                        salt_consumption = row['Salt Consumption'],
+                        salt_balance = row[' Salt Balance'],
+                        alum_bricks_stock = row['Alum Bricks  Stock'],
+                        con = row['con'],
+                        balance = row['balance'],
+                        powder_consumption = row['Powder Consumption'],
+                        powder_balance = row['Powder Balance '],
+                        utility = row['Utility'],
+                        production = row['Production'],
+                        diff = row['Diff'],
+                        hardness = row['Hardness'],
+                        tds = row['TDS'],
 
-                    river=row['River'],
-                    process=row['Process'],
-                    drinking=row['Drinking'],
-                    # finishing_return=row["Finishing Return"],
-                    # piece_dying_return=row['Piece Dying Return'],
-                    total_return=row['Total Return'],
-                    drinking_school=row['Drinking School'],
-                    etp=row['ETP'],
-                    weaving=row['Weaving'],
-                    old_finishing=row['Old finishing'],
-                    new_finishing=row['New finishing'],
-                    total_fsg=row['Total fsg'],
-                    piece_dyeing=row['Piece Dyieng'],
-                    dyeing=row['Dyeing'],
-                    wool_scoring=row['Wool scoring'],
-                    folding=row['Folding'],
-                    recombing=row['Recombing'],
-                    drinking_ro=row['Drinking RO'],
-                    spinning=row['Spinning'],
-                    boiler=row['Boiler'],
-                    engg_drinking=row['Engg. Drinking'],
-                    grey_combing=row['Grey combing'],
-                    regeneration=row['Regeneration'],
-                    total_process_return=row['Total = Process - Return'],
-                    all_process_total=row['All process total'],
-                    canteen=row['canteen'],
-                    run_hr_m_small_pump = row['Run hr m (Small pump)'],
-                    run_hr_m_big_pump = row['Run hr m        (Big pump)'],
-                    rain_water_kl_small_pump = row['rain water KL(small pump)'],
-                    rain_water_kl_big_pump = row['rain water KL(BIG pump)'],
-                    total_rain_water_kl = row['TOTAL RAIN WATER(KL)'],
-                    c = row['C'],
-                    d = row['D'],
-                    opening = row['Opening'],
-                    salt_consumption = row['Salt Consumption'],
-                    salt_balance = row[' Salt Balance'],
-                    alum_bricks_stock = row['Alum Bricks  Stock'],
-                    con = row['con'],
-                    balance = row['balance'],
-                    powder_consumption = row['Powder Consumption'],
-                    powder_balance = row['Powder Balance '],
-                    utility = row['Utility'],
-                    production = row['Production'],
-                    diff = row['Diff'],
-                    hardness = row['Hardness'],
-                    tds = row['TDS'],
-
-                )
-                session.add(water_consumption)
+                    )
+                    session.add(water_consumption)
         session.commit()
         session.close()
     return render_template('upload.html')
