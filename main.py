@@ -41,6 +41,8 @@ def upload():
     if request.method == 'POST':
         # Retrieve the uploaded file from the form data
         file = request.files['file']
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
         
         # Parse the Excel file using a library like Pandas
         
@@ -50,27 +52,29 @@ def upload():
         session = Session()
         for _, row in df.iterrows():
             if not pd.isna(row['Date']):
-                steam_consumption = SteamConsumption(
-                    # date=datetime.strptime(row['Date'], "%y-%m-%d").strftime("%Y-%m-%d %H:%M:%S"),
-                    date=row['Date'], 
-                    total_steam=row['Total Steam'],
-                    finishing=row['Finishing'],
-                    weaving=row['Weaving'],
-                    recombing=row['Recombing'],
-                    grey_combing=row['Grey Combing'],
-                    dyeing=row['Dyeing'],
-                    spinning=row['Spinning'],
-                    sludge_drier=row['Sludge Drier'],
-                    w_s=row['W/S'],
-                    pc_dyg=row['Pc Dyg'],
-                    tfo=row['TFO'],
-                    steaming_m_c=row['Steaming m/c'],
-                    unmetered=row['Unmetered '],
-                    unmetered_percentage=row['Unmetered %age'],
-                    dm_water=row['DM Water'],
-                    recovery_percentage=row['Recovery %']
-                )
-                session.add(steam_consumption)
+                date = row['Date']
+                if start_date <= date <= end_date:
+                    steam_consumption = SteamConsumption(
+                        date=date, 
+                        total_steam=row['Total Steam'],
+                        finishing=row['Finishing'],
+                        weaving=row['Weaving'],
+                        recombing=row['Recombing'],
+                        grey_combing=row['Grey Combing'],
+                        dyeing=row['Dyeing'],
+                        spinning=row['Spinning'],
+                        sludge_drier=row['Sludge Drier'],
+                        w_s=row['W/S'],
+                        pc_dyg=row['Pc Dyg'],
+                        tfo=row['TFO'],
+                        steaming_m_c=row['Steaming m/c'],
+                        unmetered=row['Unmetered '],
+                        unmetered_percentage=row['Unmetered %age'],
+                        dm_water=row['DM Water'],
+                        recovery_percentage=row['Recovery %']
+                    )
+                    session.add(steam_consumption)
+
         session.commit()
         session.close()
         
